@@ -33,8 +33,8 @@ connectDB();
 const allowedOrigins = [
     'http://localhost:3032', 
     'http://localhost:3033', // Local development    
-    'https://frontend-react-js-trang-chu-web-ban-game.vercel.app',
-    'https://frontend-react-js-trang-admin-web-ban-game.vercel.app',   
+    'https://www.shoprobux.store',
+    'https://adminshopgame.shoprobux.store',   
 ];
 
 app.use(cors({
