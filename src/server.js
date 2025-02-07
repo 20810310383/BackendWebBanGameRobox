@@ -12,6 +12,7 @@ const theDTRouter = require('./routes/theDTRouter');
 const goiNapRouter = require('./routes/goiNapRouter');
 const lichSuGoiNapGiaReRouter = require('./routes/lichSuGoiNapGiaRe');
 const lichSuGoiNapGiaVipRouter = require('./routes/lichSuGoiNapGiaVipRouter');
+const lichSuGoiNapGia120hRouter = require('./routes/lichSuGoiNapGia120hRouter');
 const giaRobuxRouter = require('./routes/giaRobuxRouter');
 const connectDB = require('./config/connectDB');
 const cors = require('cors');
@@ -75,6 +76,7 @@ const routes = [
     { path: '/api/goinap', router: goiNapRouter },
     { path: '/api/lichsugoigiare', router: lichSuGoiNapGiaReRouter },
     { path: '/api/goivip', router: lichSuGoiNapGiaVipRouter },
+    { path: '/api/120h', router: lichSuGoiNapGia120hRouter },
     { path: '/api/giarobux', router: giaRobuxRouter },
 ];
   

@@ -1,7 +1,6 @@
 const { default: mongoose } = require("mongoose");
 const AccKH = require("../../models/AccKH");
 const LichSuNapGoi120h = require("../../models/LichSuNapGoi120h");
-const LichSuNapGoi120h = require("../../models/LichSuNapGoi120h");
 
 module.exports = {
 
