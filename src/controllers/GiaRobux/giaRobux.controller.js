@@ -18,8 +18,10 @@ module.exports = {
     },
 
     createRobux: async (req, res) => {
-        let giaRobux = req.body.giaRobux
-        let findRobux = await GiaRobux.create({giaRobux})
+        let giaRobux = req.body.giaRobux        
+        let tonKho = req.body.tonKho
+
+        let findRobux = await GiaRobux.create({giaRobux, tonKho})
 
         if(findRobux) {
             return res.status(200).json({
@@ -38,8 +40,9 @@ module.exports = {
     updateRobux: async (req, res) => {
         let _id = req.body._id
         let giaRobux = req.body.giaRobux
-        
-        let findRobux = await GiaRobux.updateOne({_id: _id}, {giaRobux})
+        let tonKho = req.body.tonKho
+
+        let findRobux = await GiaRobux.updateOne({_id: _id}, {giaRobux, tonKho})
 
         if(findRobux) {
             return res.status(200).json({
