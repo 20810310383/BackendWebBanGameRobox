@@ -171,7 +171,8 @@ module.exports = {
                 // Phản hồi khi gửi thành công
                 return res.status(200).json({
                     success: true,
-                    message: "Mã OTP đã được gửi đến email của bạn. Vui lòng xác nhận OTP để xác nhận đăng ký tài khoản!"
+                    message: "Đăng ký thành công, bạn có thể đăng nhập!"
+                    // message: "Mã OTP đã được gửi đến email của bạn. Vui lòng xác nhận OTP để xác nhận đăng ký tài khoản!"
                 });
             });
         } catch (error) {
