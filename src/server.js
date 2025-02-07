@@ -10,6 +10,7 @@ const muaHangRouter = require('./routes/muaHangRouter');
 const hopQuaRouter = require('./routes/hopQuaRouter');
 const theDTRouter = require('./routes/theDTRouter');
 const goiNapRouter = require('./routes/goiNapRouter');
+const lichSuGoiNapGiaReRouter = require('./routes/lichSuGoiNapGiaRe');
 const connectDB = require('./config/connectDB');
 const cors = require('cors');
 const multer = require('multer');
@@ -70,6 +71,7 @@ const routes = [
     { path: '/api/hopqua', router: hopQuaRouter },
     { path: '/api/thedt', router: theDTRouter },
     { path: '/api/goinap', router: goiNapRouter },
+    { path: '/api/lichsugoigiare', router: lichSuGoiNapGiaReRouter },
 ];
   
 routes.forEach(route => app.use(route.path, route.router));

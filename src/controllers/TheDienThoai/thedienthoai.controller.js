@@ -73,9 +73,9 @@ module.exports = {
 
     createTheDienThoai: async (req, res) => {
         try {
-            let { Seri, MaThe, IdKH } = req.body;            
+            let { Seri, MaThe, IdKH, NhaMang, MenhGia } = req.body;            
 
-            let updateTL = await TheDienThoai.create({ Seri, MaThe, IdKH });
+            let updateTL = await TheDienThoai.create({ Seri, MaThe, IdKH, NhaMang, MenhGia });
 
             if (updateTL) {
                 return res.status(200).json({
@@ -98,11 +98,11 @@ module.exports = {
 
     updateTheDienThoai: async (req, res) => {
         try {
-            let { _id, Seri, MaThe, IdKH, Note } = req.body;            
+            let { _id, Seri, MaThe, IdKH, Note, NhaMang, MenhGia } = req.body;            
 
             let updateTL = await TheDienThoai.updateOne(
                 { _id: _id },
-                { Seri, MaThe, IdKH, Note }
+                { Seri, MaThe, IdKH, Note, NhaMang, MenhGia }
             );
 
             if (updateTL) {

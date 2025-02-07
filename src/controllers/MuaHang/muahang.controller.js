@@ -76,7 +76,7 @@ module.exports = {
             console.log("sp: ", sp);
             console.log("kh: ", kh);
     
-            let mess = `Cảm ơn bạn đã chốt dự án: ${sp.TenSP} thành công!`;
+            let mess = `Cảm ơn bạn đã chốt dự án: ${sp.TenSP} thành công! Thông tin tài khoản đã được gửi đến bạn, vui lòng kiểm tra trong mục tài khoản của tôi!`;
             return res.status(200).json({
                 message: mess,
                 errCode: 0,
@@ -108,7 +108,12 @@ module.exports = {
                 query.IdKH = new mongoose.Types.ObjectId(idKH);
             }
 
-            let orderSP = await Order.find(query).populate("IdSP IdKH").skip(skip).limit(limitNumber)         
+            let sortOrder = 1; // tang dn
+            if (order === "desc") {
+                sortOrder = -1;
+            }
+
+            let orderSP = await Order.find(query).populate("IdSP IdKH").skip(skip).limit(limitNumber).sort({ [sort]: sortOrder });       
             
             const totalOrderSP = await Order.countDocuments(query); // Đếm tổng số chức vụ
 
