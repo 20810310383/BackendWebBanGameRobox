@@ -11,6 +11,8 @@ const hopQuaRouter = require('./routes/hopQuaRouter');
 const theDTRouter = require('./routes/theDTRouter');
 const goiNapRouter = require('./routes/goiNapRouter');
 const lichSuGoiNapGiaReRouter = require('./routes/lichSuGoiNapGiaRe');
+const lichSuGoiNapGiaVipRouter = require('./routes/lichSuGoiNapGiaVipRouter');
+const giaRobuxRouter = require('./routes/giaRobuxRouter');
 const connectDB = require('./config/connectDB');
 const cors = require('cors');
 const multer = require('multer');
@@ -72,6 +74,8 @@ const routes = [
     { path: '/api/thedt', router: theDTRouter },
     { path: '/api/goinap', router: goiNapRouter },
     { path: '/api/lichsugoigiare', router: lichSuGoiNapGiaReRouter },
+    { path: '/api/goivip', router: lichSuGoiNapGiaVipRouter },
+    { path: '/api/giarobux', router: giaRobuxRouter },
 ];
   
 routes.forEach(route => app.use(route.path, route.router));

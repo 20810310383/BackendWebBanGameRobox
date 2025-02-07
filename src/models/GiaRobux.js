@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const GiaRobux_Schema = new mongoose.Schema(
     {               
-        GiaRobux: { type: Number },            
+        giaRobux: { type: Number, default: 0},            
     },
     { 
         timestamps: true,   // createAt, updateAt
