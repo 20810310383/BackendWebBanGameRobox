@@ -341,16 +341,25 @@ module.exports = {
             // Lấy thông tin khách hàng
             const user = await AccKH.findById(userId);
     
-            // Kiểm tra xem người dùng có còn lượt quay không
-            if (user.quayMayManCount <= 0) {
+            // // Kiểm tra xem người dùng có còn lượt quay không
+            // if (user.quayMayManCount <= 0) {
+            //     return res.status(500).json({
+            //         message: "Bạn đã hết lượt quay số may mắn.",
+            //         errCode: -1,
+            //     })
+            // }
+    
+            // // Giảm số lần quay đi 1
+            // user.quayMayManCount -= 1;
+
+            if (user.soDu < 10000) {
                 return res.status(500).json({
-                    message: "Bạn đã hết lượt quay số may mắn.",
+                    message: "Bạn đã hết số dư, vui lòng bơm thêm để quay tiếp (10k = 1 lần quay số )",
                     errCode: -1,
                 })
             }
-    
-            // Giảm số lần quay đi 1
-            user.quayMayManCount -= 1;
+
+            user.soDu -= 10000;
     
             // Lưu lại thay đổi
             await user.save();
