@@ -7,7 +7,7 @@ module.exports = {
             return res.status(200).json({
                 message: "Đã tìm ra ThongBaoBanner",
                 errCode: 0,
-                data: ThongBaoBanner,                   
+                data: findRobux,                   
             })
         } else {
             return res.status(500).json({
