@@ -1,7 +1,11 @@
 const SePayTransaction = require("../../models/SepayTransaction");
 const { default: mongoose } = require("mongoose");
 const CongTacVien = require("../../models/CongTacVien");
-
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+// Secret key cho JWT
+const JWT_SECRET = process.env.JWT_SECRET; 
+const crypto = require('crypto');
 require("dotenv").config();
 
 module.exports = {
@@ -70,14 +74,14 @@ module.exports = {
 
     updatectv: async (req, res) => {
         try {
-            let { _id, name, email, soDu, soTienNap } = req.body;
+            let { _id, name, email, soDu, soTienNap, image } = req.body;
 
             console.log("soDu: ", soDu);
             console.log("soTienNap: ", soTienNap);
 
             let updateTL = await CongTacVien.updateOne(
                 { _id: _id },
-                { name, email, soDu, soTienNap }
+                { name, email, soDu, soTienNap, image }
             );
 
             if (updateTL) {
@@ -182,7 +186,7 @@ module.exports = {
     },
 
     registerCTV: async (req, res) => {
-        const { email, password, name } = req.body;
+        const { email, password, name, image } = req.body;
             
         try {
             // Kiểm tra xem email đã tồn tại trong cơ sở dữ liệu chưa
@@ -227,7 +231,7 @@ module.exports = {
     
                 // Tạo tài khoản mới
                 check = await CongTacVien.create({
-                    email, password: hashedPassword, name
+                    email, password: hashedPassword, name, image
                 });
             }
                
@@ -235,6 +239,7 @@ module.exports = {
 
             return res.status(200).json({
                 success: true,
+                data: check,
                 message: "Đăng ký tài khoản CTV thành công!"
                 // message: "Mã OTP đã được gửi đến email của bạn. Vui lòng xác nhận OTP để xác nhận đăng ký tài khoản!"
             });
