@@ -11,7 +11,7 @@ module.exports = {
 
     getProducts: async (req, res) => {
         try {
-            const { page, limit, TenSP, sort, order, locTheoLoai, locTheoGia, GiamGiaSP, tu, den, isActive, IdCTV } = req.query; 
+            const { page, limit, TenSP, sort, order, locTheoLoai, locTheoGia, GiamGiaSP, tu, den, isActive, IdCTV, isEqualIdCTV } = req.query; 
 
             // Chuyển đổi thành số
             const pageNumber = parseInt(page, 10);
@@ -42,8 +42,19 @@ module.exports = {
                 query.IdLoaiSP = { $in: locTheoLoaiArray }; // Dùng toán tử $in để lọc theo mảng các ObjectId
             }
 
-            if (IdCTV) {
-                query.IdCTV = new mongoose.Types.ObjectId(IdCTV);
+            // Xử lý điều kiện IdCTV
+            // if (IdCTV) {
+            //     const objectIdCTV = new mongoose.Types.ObjectId(IdCTV);
+            //     if (isEqualIdCTV === 'true') {
+            //         query.IdCTV = objectIdCTV; // Lọc theo IdCTV bằng
+            //     } else if (isEqualIdCTV === 'false') {
+            //         query.IdCTV = { $ne: objectIdCTV }; // Lọc theo IdCTV không bằng
+            //     }
+            // }
+            if (isEqualIdCTV === 'true') {
+                query.IdCTV = IdCTV; // Lọc theo IdCTV bằng
+            } else if (isEqualIdCTV === 'false') {
+                query.IdCTV = { $ne: IdCTV }; // Lọc theo IdCTV không bằng
             }
             
             // tang/giam
@@ -96,6 +107,8 @@ module.exports = {
 
                 const totalPages = Math.ceil(totalSanPham / limitNumber); // Tính số trang
 
+                console.log("sp: ", sp);
+                
                 if(sp) {
                     return res.status(200).json({
                         message: "Đã tìm ra products",
@@ -116,7 +129,7 @@ module.exports = {
             // query.isActive = isActive
             
             let sp = await SanPham.find(query)
-                .populate("IdLoaiSP")
+                .populate("IdLoaiSP IdCTV")
                 .skip(skip)
                 .limit(limitNumber)
                 .sort({ [sort]: sortOrder })           
