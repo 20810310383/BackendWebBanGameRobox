@@ -11,7 +11,7 @@ module.exports = {
 
     getProducts: async (req, res) => {
         try {
-            const { page, limit, TenSP, sort, order, locTheoLoai, locTheoGia, GiamGiaSP, tu, den, isActive } = req.query; 
+            const { page, limit, TenSP, sort, order, locTheoLoai, locTheoGia, GiamGiaSP, tu, den, isActive, IdCTV } = req.query; 
 
             // Chuyển đổi thành số
             const pageNumber = parseInt(page, 10);
@@ -40,6 +40,10 @@ module.exports = {
                 const locTheoLoaiArray = Array.isArray(locTheoLoai) ? locTheoLoai : JSON.parse(locTheoLoai);
 
                 query.IdLoaiSP = { $in: locTheoLoaiArray }; // Dùng toán tử $in để lọc theo mảng các ObjectId
+            }
+
+            if (IdCTV) {
+                query.IdCTV = new mongoose.Types.ObjectId(IdCTV);
             }
             
             // tang/giam
@@ -83,7 +87,7 @@ module.exports = {
             if(isActive){
                 query.isActive = isActive
                 let sp = await SanPham.find(query)
-                .populate("IdLoaiSP")
+                .populate("IdLoaiSP IdCTV")
                 .skip(skip)
                 .limit(limitNumber)
                 .sort({ [sort]: sortOrder })           
@@ -147,12 +151,12 @@ module.exports = {
 
     createProduct: async (req, res) => {
         try {
-            let {TenSP, GiaBan, GiamGiaSP, urlYoutube, MoTa, ImageSlider, Image, IdLoaiSP, SoLuongTon, Note, urlDriverVideo} = req.body                                      
+            let {TenSP, GiaBan, GiamGiaSP, urlYoutube, MoTa, ImageSlider, Image, IdLoaiSP, SoLuongTon, Note, urlDriverVideo, IdCTV} = req.body                                      
 
             // Mã hóa mật khẩu trước khi lưu vào cơ sở dữ liệu
             const hashedTK_MK = await bcrypt.hash(Note, 10);
 
-            let createSP = await SanPham.create({TenSP, GiaBan, GiamGiaSP, urlYoutube, MoTa, ImageSlider, Image, IdLoaiSP, SoLuongTon, Note, urlDriverVideo})
+            let createSP = await SanPham.create({TenSP, GiaBan, GiamGiaSP, urlYoutube, MoTa, ImageSlider, Image, IdLoaiSP, SoLuongTon, Note, urlDriverVideo, IdCTV})
 
             if(createSP){
                 return res.status(200).json({
@@ -178,12 +182,12 @@ module.exports = {
 
     updateProduct: async (req, res) => {
         try {
-            let {_id, TenSP, GiaBan, GiamGiaSP, urlYoutube, MoTa, ImageSlider, Image, IdLoaiSP, SoLuongTon, Note, urlDriverVideo} = req.body
+            let {_id, TenSP, GiaBan, GiamGiaSP, urlYoutube, MoTa, ImageSlider, Image, IdLoaiSP, SoLuongTon, Note, urlDriverVideo, IdCTV} = req.body
 
             // Mã hóa mật khẩu trước khi lưu vào cơ sở dữ liệu
             const hashedTK_MK = await bcrypt.hash(Note, 10);
 
-            let updateTL = await SanPham.updateOne({_id: _id},{TenSP, GiaBan, GiamGiaSP, urlYoutube, MoTa, ImageSlider, Image, IdLoaiSP, SoLuongTon, Note, urlDriverVideo})
+            let updateTL = await SanPham.updateOne({_id: _id},{TenSP, GiaBan, GiamGiaSP, urlYoutube, MoTa, ImageSlider, Image, IdLoaiSP, SoLuongTon, Note, urlDriverVideo, IdCTV})
 
             if(updateTL) {
                 return res.status(200).json({
