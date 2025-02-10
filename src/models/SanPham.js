@@ -13,6 +13,7 @@ const SanPham_Schema = new mongoose.Schema(
         ImageSlider: [{ type: String }],    
         Image: { type: String, required: false },     
         IdLoaiSP: {ref: "LoaiSP", type: mongoose.SchemaTypes.ObjectId},
+        IdCTV: {ref: "CongTacVien", type: mongoose.SchemaTypes.ObjectId},
         SoLuongTon: { type: Number, required: false, default: 1 },  
         isActive: { type: Boolean, default: true},     
     },
