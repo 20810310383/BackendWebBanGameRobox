@@ -155,7 +155,7 @@ module.exports = {
     
     getAllOrderThongBao: async (req, res) => {
         try {
-            let {page, limit, name, sort, order, idKH} = req.query
+            let {page, limit, name, sort, order, idKH, idCTV} = req.query
 
             // Chuyển đổi thành số
             const pageNumber = parseInt(page, 10);
@@ -172,7 +172,10 @@ module.exports = {
             });
             let timSP = await SanPham.findOne({TenSP: name });
             console.log("timKH: ", timKH);
+            console.log("idCTV: ", idCTV);
             
+            let timSPTheoCTV = await SanPham.findOne({IdCTV: idCTV });
+            console.log("timSPTheoCTV: ", timSPTheoCTV);
 
             // Tạo query tìm kiếm
             const query = {};    
@@ -181,6 +184,23 @@ module.exports = {
             }
             if(timSP)  {
                 query.IdSP = new mongoose.Types.ObjectId(timSP._id);
+            }
+            // if(idCTV)  {
+            //     query.IdSP = new mongoose.Types.ObjectId(timSPTheoCTV._id);
+            // }
+            if (idCTV) {
+                if (idCTV === "507f191e810c19729de860ea") {
+                    // Nếu idCTV là admin, lấy tất cả sản phẩm thuộc admin
+                    let sanPhamsAdmin = await SanPham.find({ IdCTV: new mongoose.Types.ObjectId("507f191e810c19729de860ea") });
+                    let idsSanPhamAdmin = sanPhamsAdmin.map(sp => sp._id); // Lấy danh sách _id của sản phẩm admin đăng
+                    query.IdSP = { $in: idsSanPhamAdmin }; // Tìm các đơn hàng có IdSP thuộc danh sách này
+                } else {
+                    // Nếu idCTV là CTV bình thường, chỉ lấy đơn hàng có sản phẩm của CTV đó
+                    let timSPTheoCTV = await SanPham.findOne({ IdCTV: idCTV });
+                    if (timSPTheoCTV) {
+                        query.IdSP = new mongoose.Types.ObjectId(timSPTheoCTV._id);
+                    }
+                }
             }
             
             
