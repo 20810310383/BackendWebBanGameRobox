@@ -252,7 +252,7 @@ module.exports = {
             const {IdAcc} = req.query
             console.log("id getDetailSP: ", IdAcc);            
 
-            let sp = await SanPham.findById(IdAcc).populate("IdLoaiSP")
+            let sp = await SanPham.findById(IdAcc).populate("IdLoaiSP IdCTV")
             if(sp) {
                 return res.status(200).json({
                     data: sp,
