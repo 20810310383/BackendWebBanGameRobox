@@ -19,6 +19,33 @@ const transporter = nodemailer.createTransport({
 
 module.exports = {
 
+    checkActiveStatus: async (req, res, next) => {
+        try {
+            const token = req.cookies.token;
+            if (!token) {
+                return res.status(401).json({ message: "Bạn chưa đăng nhập" });
+            }
+    
+            const decoded = jwt.verify(token, JWT_SECRET);
+            const user = await AccKH.findById(decoded.adminId);
+    
+            if (!user) {
+                return res.status(401).json({ message: "Tài khoản không tồn tại" });
+            }
+    
+            // Kiểm tra nếu tài khoản bị vô hiệu hóa
+            if (!user.isActive) {
+                res.clearCookie("token");
+                return res.status(403).json({ message: "Tài khoản bị khóa, vui lòng liên hệ Admin!" });
+            }
+    
+            req.user = user; // Lưu thông tin user vào request
+            next();
+        } catch (error) {
+            res.status(401).json({ message: "Phiên đăng nhập không hợp lệ" });
+        }
+    },
+
     loginAccKH: async (req, res) => {
         const {name, password} = req.body
 
@@ -62,6 +89,10 @@ module.exports = {
                 { expiresIn: '1m' } // Token hết hạn sau 10 phút
             );
 
+            // Lưu token vào database để kiểm tra sau này
+            admin.tokenAccess = token;
+            await admin.save();
+
              // Lưu token vào cookie
             res.cookie('token', token, {
                 httpOnly: true, // Bảo mật hơn khi chỉ có server mới có thể truy cập cookie này
@@ -78,6 +109,31 @@ module.exports = {
         }
     },
 
+    logoutKH2: async (req, res) => {
+        try {
+            const token = req.cookies.token;
+    
+            if (!token) {
+                return res.status(400).json({ message: "Bạn chưa đăng nhập" });
+            }
+    
+            const decoded = jwt.verify(token, JWT_SECRET);
+            const user = await AccKH.findById(decoded.adminId);
+    
+            if (user) {
+                user.tokenAccess = null; // Xóa token trong database
+                await user.save();
+            }
+    
+            res.clearCookie("token");
+    
+            res.status(200).json({ message: "Bạn đã đăng xuất thành công" });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: "Lỗi máy chủ" });
+        }
+    },
+    
     logoutKH: async (req, res) => {
         try {
             // Xóa cookie chứa token

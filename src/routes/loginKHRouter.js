@@ -5,6 +5,7 @@ const {
     logoutKH,
     xacThucOTP,
     quenMatKhauKH,
+    checkActiveStatus,
 } = require("../controllers/Login/login.kh.controller");
 const {
     getKH,
@@ -24,6 +25,8 @@ router.post("/register-kh", registerAccKH);
 // route logout  KH
 router.post("/logout-kh", logoutKH);
 
+
+
 router.post("/xac-thuc-otp-kh", xacThucOTP);
 
 router.post("/quen-mat-khau", quenMatKhauKH);
@@ -40,5 +43,5 @@ router.delete("/delete-kh/:id", deleteKH);
 
 // // đổi thông tin khách hàng
 // router.put("/doi-thong-tin", doiThongTinKH)
-
+// router.use(checkActiveStatus);
 module.exports = router;
