@@ -191,7 +191,11 @@ module.exports = {
             }
 
             let orderSP = await Order.find(query)
-            .populate("IdSP IdKH")           
+            .populate("IdSP IdKH")  
+            .populate({
+                path: "IdSP",
+                populate: { path: "IdCTV" }  // Populate IdCTV trong SanPham
+            })         
             .skip(skip)
             .limit(limitNumber)
             .sort({ [sort]: sortOrder })        
