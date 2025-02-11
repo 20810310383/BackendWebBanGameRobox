@@ -77,6 +77,7 @@ module.exports = {
             let { _id, name, email, soDu, soTienNap, image, stk } = req.body;
 
             console.log("soDu: ", soDu);
+            
             console.log("soTienNap: ", soTienNap);
 
             let updateTL = await CongTacVien.updateOne(
