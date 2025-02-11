@@ -37,6 +37,7 @@ const allowedOrigins = [
     'http://localhost:3034', // Local development    
     'https://www.shoprobux.store',
     'https://adminshopgame.shoprobux.store',   
+    'https://ctvshopgame.shoprobux.store',   
 ];
 
 app.use(cors({
