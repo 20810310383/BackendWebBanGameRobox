@@ -34,6 +34,7 @@ connectDB();
 const allowedOrigins = [
     'http://localhost:3032', 
     'http://localhost:3033', // Local development    
+    'http://localhost:3034', // Local development    
     'https://www.shoprobux.store',
     'https://adminshopgame.shoprobux.store',   
 ];

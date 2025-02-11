@@ -1,18 +1,18 @@
 const express = require("express");
 const { registerCTV, getCTV, updatectv, khoaCTV, deleteCTV, getOneCTV } = require("../controllers/CongTacVien/ctv.controller");
+const { loginCTV, logoutCTV } = require("../controllers/Login/login.ctv.controller");
 
 const router = express.Router();
 
 // route đăng nhập ctv
-// router.post("/login-ctv", loginAccctv);
+router.post("/login-ctv", loginCTV);
 
 // route register ctv
 router.post("/register-ctv", registerCTV);
 
 // route logout  ctv
-// router.post("/logout-ctv", logoutctv);
+router.post("/logout-ctv", logoutCTV);
 
-// router.post("/quen-mat-ctvau", quenMatctvauctv);
 
 router.get("/get-ctv", getCTV);
 router.get("/get-one-ctv", getOneCTV);
