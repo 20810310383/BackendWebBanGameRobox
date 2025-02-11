@@ -236,11 +236,11 @@ module.exports = {
             if(updateTL) {
                 return res.status(200).json({
                     data: updateTL,
-                    message: "Chỉnh sửa linkDownload thành công"
+                    message: "Chỉnh sửa mật khẩu mới của account thành công"
                 })
             } else {
                 return res.status(404).json({                
-                    message: "Chỉnh sửa linkDownload thất bại"
+                    message: "Chỉnh sửa mật khẩu mới của account thất bại"
                 })
             }
 
