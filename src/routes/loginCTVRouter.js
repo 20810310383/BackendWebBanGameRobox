@@ -1,6 +1,6 @@
 const express = require("express");
 const { registerCTV, getCTV, updatectv, khoaCTV, deleteCTV, getOneCTV } = require("../controllers/CongTacVien/ctv.controller");
-const { loginCTV, logoutCTV } = require("../controllers/Login/login.ctv.controller");
+const { loginCTV, logoutCTV, doiThongTinctv } = require("../controllers/Login/login.ctv.controller");
 
 const router = express.Router();
 
@@ -23,7 +23,7 @@ router.put("/khoa-ctv", khoaCTV);
 
 router.delete("/delete-ctv/:id", deleteCTV);
 
-// // đổi thông tin ctvách hàng
-// router.put("/doi-thong-tin", doiThongTinctv)
+// // đổi thông tin ctv
+router.put("/doi-thong-tin-ctv", doiThongTinctv)
 
 module.exports = router;

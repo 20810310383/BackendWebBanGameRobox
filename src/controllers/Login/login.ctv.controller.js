@@ -81,5 +81,32 @@ module.exports = {
             console.error(error);
             res.status(500).json({ message: 'Lỗi máy chủ' });
         }
-    },    
+    },  
+    
+    doiThongTinctv: async (req, res) => {
+        const {_idAcc, password, passwordMoi, image, stk} = req.body 
+
+        console.log("image: ", image);
+        
+        
+        // một chuỗi đã được mã hóa có thể lưu vào cơ sở dữ liệu.
+        const hashedPassword = await bcrypt.hash(passwordMoi, 10);
+
+        const updateResult = await CongTacVien.updateOne(
+            { _id: _idAcc }, 
+            { password: hashedPassword, image, stk }
+        );
+        
+        if(updateResult) {
+            // Trả về kết quả thành công
+            return res.status(200).json({
+                message: "Cập nhật tài khoản khách hàng thành công!",
+                data: updateResult
+            });
+        } else {
+            return res.status(404).json({                
+                message: "Chỉnh sửa thất bại"
+            })
+        }  
+    }
 }
