@@ -2,6 +2,7 @@ const { default: mongoose } = require('mongoose');
 const AccKH = require('../../models/AccKH');
 const Order = require('../../models/Order');
 const SanPham = require('../../models/SanPham');
+const CongTacVien = require('../../models/CongTacVien');
 
 require('dotenv').config();
 
@@ -60,6 +61,7 @@ module.exports = {
             }    
             
             let soDuUpdate = Math.floor(kh.soDu - giaCanThanhToan);
+            let soDuCongChoCTV = Math.floor(giaCanThanhToan);
                 
             // Cập nhật số dư tài khoản của khách hàng
             kh = await AccKH.findByIdAndUpdate(
@@ -68,13 +70,16 @@ module.exports = {
                 {new: true}
             );
 
+            let ctv = await CongTacVien.findByIdAndUpdate(
+                {_id: sp.IdCTV?._id},
+                {soDu: soDuCongChoCTV},
+                {new: true}
+            );
+
             let luuCSDL = await Order.create({
                 IdSP: idSP, 
                 IdKH: idKH, 
             })
-    
-            console.log("sp: ", sp);
-            console.log("kh: ", kh);
     
             let mess = `Cảm ơn bạn đã chốt dự án: ${sp.TenSP} thành công! Thông tin tài khoản đã được gửi đến bạn, vui lòng kiểm tra trong mục tài khoản của tôi!`;
             return res.status(200).json({
@@ -113,7 +118,13 @@ module.exports = {
                 sortOrder = -1;
             }
 
-            let orderSP = await Order.find(query).populate("IdSP IdKH").skip(skip).limit(limitNumber).sort({ [sort]: sortOrder });       
+            let orderSP = await Order.find(query)
+            .populate("IdSP IdKH")
+            .populate({
+                path: "IdSP",
+                populate: { path: "IdCTV" }  // Populate IdCTV trong SanPham
+            })
+            .skip(skip).limit(limitNumber).sort({ [sort]: sortOrder });       
             
             const totalOrderSP = await Order.countDocuments(query); // Đếm tổng số chức vụ
 
