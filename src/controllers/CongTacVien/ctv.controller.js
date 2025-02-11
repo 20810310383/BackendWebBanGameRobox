@@ -74,14 +74,14 @@ module.exports = {
 
     updatectv: async (req, res) => {
         try {
-            let { _id, name, email, soDu, soTienNap, image } = req.body;
+            let { _id, name, email, soDu, soTienNap, image, stk } = req.body;
 
             console.log("soDu: ", soDu);
             console.log("soTienNap: ", soTienNap);
 
             let updateTL = await CongTacVien.updateOne(
                 { _id: _id },
-                { name, email, soDu, soTienNap, image }
+                { name, email, soDu, soTienNap, image, stk }
             );
 
             if (updateTL) {
@@ -186,7 +186,7 @@ module.exports = {
     },
 
     registerCTV: async (req, res) => {
-        const { email, password, name, image } = req.body;
+        const { email, password, name, image, stk } = req.body;
             
         try {
             // Kiểm tra xem email đã tồn tại trong cơ sở dữ liệu chưa
@@ -231,7 +231,7 @@ module.exports = {
     
                 // Tạo tài khoản mới
                 check = await CongTacVien.create({
-                    email, password: hashedPassword, name, image
+                    email, password: hashedPassword, name, image, stk
                 });
             }
                
