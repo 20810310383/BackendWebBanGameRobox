@@ -343,7 +343,7 @@ module.exports = {
                 query.isActive = isActive
                 let sp = await SanPham.find(query)
                     .collation({ locale: 'vi', strength: 1 }) 
-                    .populate("IdLoaiSP")
+                    .populate("IdLoaiSP IdCTV")
                     .skip(skip)
                     .limit(limitNumber)
                     .sort({ [sort]: sortOrder })            
