@@ -92,11 +92,11 @@ module.exports = {
             if (xoaTL) {
                 return res.status(200).json({
                     data: xoaTL,
-                    message: "Bạn đã xoá yêu cầu rút tiền thành công và đã hoàn lại số tiền đó cho ctv!",
+                    message: "Xoá yêu cầu rút tiền thành công và đã hoàn lại số tiền đó cho ctv!",
                 });
             } else {
                 return res.status(500).json({
-                    message: "Bạn đã xoá yêu cầu rút tiền thất bại!",
+                    message: "Xoá yêu cầu rút tiền thất bại!",
                 });
             }
         } catch (error) {
