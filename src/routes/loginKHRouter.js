@@ -6,6 +6,7 @@ const {
     xacThucOTP,
     quenMatKhauKH,
     checkActiveStatus,
+    doiThongTinKH,
 } = require("../controllers/Login/login.kh.controller");
 const {
     getKH,
@@ -42,6 +43,6 @@ router.put("/khoa-kh", khoaAccKH);
 router.delete("/delete-kh/:id", deleteKH);
 
 // // đổi thông tin khách hàng
-// router.put("/doi-thong-tin", doiThongTinKH)
+router.put("/doi-thong-tin", doiThongTinKH)
 // router.use(checkActiveStatus);
 module.exports = router;

@@ -100,7 +100,7 @@ module.exports = {
         if(updateResult) {
             // Trả về kết quả thành công
             return res.status(200).json({
-                message: "Cập nhật tài khoản khách hàng thành công!",
+                message: "Cập nhật mật khẩu thành công!",
                 data: updateResult
             });
         } else {
