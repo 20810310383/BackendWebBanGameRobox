@@ -333,17 +333,14 @@ module.exports = {
     },
 
     doiThongTinKH: async (req, res) => {
-            const {_idAcc, password, passwordMoi} = req.body 
-    
-            console.log("image: ", image);
-            
+            const {_idAcc, password, passwordMoi} = req.body             
             
             // một chuỗi đã được mã hóa có thể lưu vào cơ sở dữ liệu.
             const hashedPassword = await bcrypt.hash(passwordMoi, 10);
     
             const updateResult = await AccKH.updateOne(
                 { _id: _idAcc }, 
-                { password: hashedPassword, image, stk }
+                { password: hashedPassword }
             );
             
             if(updateResult) {
