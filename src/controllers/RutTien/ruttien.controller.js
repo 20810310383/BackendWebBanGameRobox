@@ -4,7 +4,7 @@ const LichSuRutTien = require("../../models/LichSuRutTien");
 module.exports = {
     getLichSuRutTien: async (req, res) => {
         try {
-            let { page, limit, name, sort, order, IdCTV } = req.query;
+            let { page, limit, name, sort, order, IdCTV, locTheoLoai } = req.query;
 
             // Chuyển đổi thành số
             const pageNumber = parseInt(page, 10);
@@ -14,7 +14,14 @@ module.exports = {
             const skip = (pageNumber - 1) * limitNumber;
 
             // Tạo query tìm kiếm
-            const query = {};            
+            const query = {};     
+            
+            if (locTheoLoai) {
+                // Chuyển 'locTheoLoai' từ string sang mảng ObjectId
+                const locTheoLoaiArray = Array.isArray(locTheoLoai) ? locTheoLoai : JSON.parse(locTheoLoai);
+
+                query.isActive = { $in: locTheoLoaiArray }; // Dùng toán tử $in để lọc theo mảng các ObjectId
+            } 
 
             if (IdCTV) {
                 query.IdCTV = IdCTV; // Lọc theo IdCTV bằng

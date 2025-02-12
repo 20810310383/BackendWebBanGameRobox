@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const LichSuRutTien_Schema = new mongoose.Schema(
     {
         IdCTV: {ref: "CongTacVien", type: mongoose.SchemaTypes.ObjectId},  
-        SoTienCanRut: { type: String, default: "" },  
+        SoTienCanRut: { type: Number, default: "" },  
         isActive: { type: Boolean, default: false},  
     },
     { 
