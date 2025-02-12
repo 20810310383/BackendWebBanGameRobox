@@ -69,12 +69,30 @@ module.exports = {
     deleteLichSuRutTien: async (req, res) => {
         try {
             const _id = req.params.id;
+
+            let timLichSu = await LichSuRutTien.findOne({_id: _id}).populate("IdCTV")
+            if (!timLichSu) {
+                return res.status(404).json({ message: "Lịch sử rút tiền không tồn tại!" });
+            }
+
+            let soTienDeHoan = timLichSu.SoTienCanRut
+
+            // Lấy thông tin CTV và số dư hiện tại
+            let timCTV = await CongTacVien.findById(timLichSu.IdCTV._id);
+            if (!timCTV) {
+                return res.status(404).json({ message: "Không tìm thấy CTV!" });
+            }
+
+            // Cập nhật số dư (hoàn lại tiền)
+            timCTV.soDu += soTienDeHoan;
+            await timCTV.save();
+
             let xoaTL = await LichSuRutTien.deleteOne({ _id: _id });
 
             if (xoaTL) {
                 return res.status(200).json({
                     data: xoaTL,
-                    message: "Bạn đã xoá yêu cầu rút tiền thành công!",
+                    message: "Bạn đã xoá yêu cầu rút tiền thành công và đã hoàn lại số tiền đó cho ctv!",
                 });
             } else {
                 return res.status(500).json({
