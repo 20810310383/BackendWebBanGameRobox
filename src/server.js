@@ -15,6 +15,7 @@ const lichSuGoiNapGiaVipRouter = require('./routes/lichSuGoiNapGiaVipRouter');
 const lichSuGoiNapGia120hRouter = require('./routes/lichSuGoiNapGia120hRouter');
 const giaRobuxRouter = require('./routes/giaRobuxRouter');
 const loginCTVRouter = require('./routes/loginCTVRouter');
+const rutTienCTVRouter = require('./routes/rutTienCTVRouter');
 const connectDB = require('./config/connectDB');
 const cors = require('cors');
 const multer = require('multer');
@@ -82,6 +83,7 @@ const routes = [
     { path: '/api/120h', router: lichSuGoiNapGia120hRouter },
     { path: '/api/giarobux', router: giaRobuxRouter },
     { path: '/api/ctv', router: loginCTVRouter },
+    { path: '/api/ruttien', router: rutTienCTVRouter },
 ];
   
 routes.forEach(route => app.use(route.path, route.router));
