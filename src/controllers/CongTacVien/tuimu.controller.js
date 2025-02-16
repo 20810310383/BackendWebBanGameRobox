@@ -18,7 +18,7 @@ module.exports = {
             }
             
             const price = bagTypeRecord.price;
-            const winningRate = bagTypeRecord.winningRate;
+            const winningRate = bagTypeRecord.winningRate / 100;
 
             // Kiểm tra số lượng tồn
             if (bagTypeRecord.stock < quantity) {

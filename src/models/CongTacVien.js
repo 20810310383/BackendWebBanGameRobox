@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const CongTacVien_Schema = new mongoose.Schema({   
         name: { type: String },
         email: { type: String },
+        fullName: { type: String },
         stk: { type: String },
         password: { type: String,  },        
         tokenAccess: { type: String },                                                       
