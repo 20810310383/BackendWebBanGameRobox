@@ -1,3 +1,4 @@
+const AccKH = require("../../models/AccKH");
 const BagType = require("../../models/BagType");
 const CongTacVien = require("../../models/CongTacVien");
 const Gift = require("../../models/Gift");
@@ -9,10 +10,11 @@ module.exports = {
     muaTui: async (req, res) => {
         try {
             // Dữ liệu từ client: customer, bagType (ID của loại túi) và quantity
-            const { customer, bagType, quantity } = req.body;
+            const { customer, quantity, IdCTV } = req.body;
             
             // Tìm loại túi theo ID
-            const bagTypeRecord = await BagType.findById(bagType);
+            const bagTypeRecord = await BagType.findOne({IdCTV: IdCTV});
+            // const bagTypeRecord = await BagType.findById(bagType);
             if (!bagTypeRecord) {
                 return res.status(404).json({ message: "Loại túi không tồn tại" });
             }
@@ -50,13 +52,29 @@ module.exports = {
 
             // Trừ số lượng tồn trong BagType
             await BagType.findByIdAndUpdate(
-                bagType,
+                bagTypeRecord._id,
                 { $inc: { stock: -quantity } },
                 { new: true }
             );
             
+            let kh = await AccKH.findById(customer);
+
             // Tính tổng tiền
             const totalPrice = quantity * price;
+            let soDuUpdate = Math.floor(kh.soDu - totalPrice);
+
+            if (!kh) {
+                return res.status(404).json({
+                    message: "Khách hàng không tồn tại",
+                    errCode: 3
+                });
+            }  
+            if (kh.soDu < totalPrice) {
+                return res.status(404).json({
+                    message: "Số dư không đủ để mua hàng, Vui lòng nạp thêm vào tài khoản để mua hàng!",
+                    errCode: 4
+                });
+            }              
 
             // lưu số dư cho ctv
             let timCTV = await CongTacVien.findByIdAndUpdate(
@@ -64,11 +82,18 @@ module.exports = {
                 { $inc: { soDu: totalPrice } },
                 {new: true}
             );
+
+            // trừ số dư cho ctv
+            kh = await AccKH.findByIdAndUpdate(
+                {_id: customer},
+                {soDu: soDuUpdate},
+                {new: true}
+            );
             
             // Lưu thông tin giao dịch mua
             const purchaseRecord = new LichSuMuaTuiMu({
                 customer,
-                bagType,
+                bagType: bagTypeRecord._id,
                 quantity,
                 totalPrice,
                 results,
