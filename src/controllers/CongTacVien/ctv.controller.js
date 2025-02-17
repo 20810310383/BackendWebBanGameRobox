@@ -161,7 +161,7 @@ module.exports = {
     getOneCTV: async (req, res) => {
         try {
             const id = req.query.id;
-            console.log("id: ", id);
+            // console.log("id: ", id);
 
             let accKH = await CongTacVien.find({ _id: id });
 

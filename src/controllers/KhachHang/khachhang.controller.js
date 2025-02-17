@@ -158,7 +158,7 @@ module.exports = {
     getOneAccKH: async (req, res) => {
         try {
             const id = req.query.id;
-            console.log("id: ", id);
+            // console.log("id: ", id);
 
             let accKH = await AccKH.find({ _id: id });
 

@@ -10,10 +10,10 @@ module.exports = {
     muaTui: async (req, res) => {
         try {
             // Dữ liệu từ client: customer, bagType (ID của loại túi) và quantity
-            const { customer, quantity, IdCTV } = req.body;
+            const { customer, quantity, IdLoaiTui } = req.body;
             
             // Tìm loại túi theo ID
-            const bagTypeRecord = await BagType.findOne({IdCTV: IdCTV});
+            const bagTypeRecord = await BagType.findOne({_id: IdLoaiTui});
             // const bagTypeRecord = await BagType.findById(bagType);
             if (!bagTypeRecord) {
                 return res.status(404).json({ message: "Loại túi không tồn tại" });
@@ -21,6 +21,8 @@ module.exports = {
             
             const price = bagTypeRecord.price;
             const winningRate = bagTypeRecord.winningRate / 100;
+            console.log("price: ", price);
+            console.log("winningRate: ", winningRate);
 
             // Kiểm tra số lượng tồn
             if (bagTypeRecord.stock < quantity) {
@@ -33,6 +35,7 @@ module.exports = {
                 const isWinner = Math.random() < winningRate;
                 let name = null;
                 let description = null;
+                let idGift = null;
                 if (isWinner) {
                     // Chọn ngẫu nhiên một quà từ kho (nếu có)
                     const gifts = await Gift.find({IdCTV: bagTypeRecord.IdCTV});
@@ -40,13 +43,15 @@ module.exports = {
                         const randomIndex = Math.floor(Math.random() * gifts.length);
                         name = gifts[randomIndex].name;
                         description = gifts[randomIndex].description;
+                        idGift = gifts[randomIndex]._id;
                     }
                 }
                 results.push({
                     bagId: i + 1,
                     isWinner,
                     name,
-                    description
+                    description,
+                    IdGift: idGift
                 });
             }
 
@@ -57,11 +62,10 @@ module.exports = {
                 { new: true }
             );
             
-            let kh = await AccKH.findById(customer);
+            let kh = await AccKH.findById(customer);            
 
-            // Tính tổng tiền
+            // Tính tổng tiền            
             const totalPrice = quantity * price;
-            let soDuUpdate = Math.floor(kh.soDu - totalPrice);
 
             if (!kh) {
                 return res.status(404).json({
@@ -74,7 +78,11 @@ module.exports = {
                     message: "Số dư không đủ để mua hàng, Vui lòng nạp thêm vào tài khoản để mua hàng!",
                     errCode: 4
                 });
-            }              
+            }   
+            
+            let soDuUpdate = Math.floor(kh.soDu - totalPrice);
+            console.log("soDuUpdate: ", soDuUpdate);
+            
 
             // lưu số dư cho ctv
             let timCTV = await CongTacVien.findByIdAndUpdate(
@@ -97,6 +105,7 @@ module.exports = {
                 quantity,
                 totalPrice,
                 results,
+                IdCTV: bagTypeRecord.IdCTV
             });
             await purchaseRecord.save();
             
