@@ -69,9 +69,9 @@ module.exports = {
             //     query.isActive = { $in: locTheoLoaiArray }; // Dùng toán tử $in để lọc theo mảng các ObjectId
             // } 
 
-            let sortOrder = 1; // tang dn
+            let sortOrder = -1; 
             if (order === "desc") {
-                sortOrder = -1;
+                sortOrder = 1;
             }
 
             let orderSP = await LichSuMuaTuiMu.find(query)
