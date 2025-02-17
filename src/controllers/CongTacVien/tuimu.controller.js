@@ -9,6 +9,124 @@ module.exports = {
 
     muaTui: async (req, res) => {
         try {
+            const { customer, quantity, IdLoaiTui } = req.body;
+    
+            // Tìm loại túi theo ID
+            const bagTypeRecord = await BagType.findById(IdLoaiTui)
+            .populate({
+                path: "prizePool.gift",
+                model: "Gift",
+            })
+            if (!bagTypeRecord) {
+                return res.status(404).json({ message: "Loại túi không tồn tại" });
+            }
+    
+            const price = bagTypeRecord.price;
+            const winningRate = bagTypeRecord.winningRate / 100;
+    
+            if (bagTypeRecord.stock < quantity) {
+                return res.status(400).json({ message: "Không đủ số lượng túi để mua" });
+            }
+    
+            let results = [];
+    
+            // Tính tổng tỷ lệ các quà
+            let totalGiftRate = bagTypeRecord.prizePool.reduce((sum, prize) => sum + prize.gift.rate, 0);
+
+            for (let i = 0; i < quantity; i++) {
+                let isWinner = Math.random() < winningRate; // Xác suất trúng theo túi
+                let selectedGift = null;
+
+                if (isWinner && bagTypeRecord.prizePool.length > 0) {
+                    let randomValue = Math.random() * totalGiftRate; // Random trong khoảng tổng rate
+                    let cumulativeRate = 0;
+
+                    for (const prize of bagTypeRecord.prizePool) {
+                        cumulativeRate += prize.gift.rate; // Cộng dồn tỉ lệ quà
+                        if (randomValue < cumulativeRate) {
+                            selectedGift = prize.gift; // Chọn quà theo tỉ lệ
+                            break;
+                        }
+                    }
+                }
+
+                results.push({
+                    bagId: i + 1,
+                    isWinner,
+                    name: selectedGift ? selectedGift.name : "Không có quà",
+                    description: selectedGift ? selectedGift.description : "Không có mô tả",
+                    IdGift: selectedGift ? selectedGift._id : null,
+                });
+
+                console.log(`Bag ${i + 1}: Winner=${isWinner}, Gift=${selectedGift ? selectedGift.name : "NULL"}`);
+            }
+
+                                
+    
+            await BagType.findByIdAndUpdate(
+                bagTypeRecord._id,
+                { $inc: { stock: -quantity } },
+                { new: true }
+            );
+    
+            let kh = await AccKH.findById(customer);
+            const totalPrice = quantity * price;
+    
+            if (!kh) {
+                return res.status(404).json({
+                    message: "Khách hàng không tồn tại",
+                    errCode: 3
+                });
+            }
+            if (kh.soDu < totalPrice) {
+                return res.status(404).json({
+                    message: "Số dư không đủ, vui lòng nạp thêm!",
+                    errCode: 4
+                });
+            }
+    
+            let soDuUpdate = Math.floor(kh.soDu - totalPrice);
+            await CongTacVien.findByIdAndUpdate(
+                { _id: bagTypeRecord.IdCTV },
+                { $inc: { soDu: totalPrice } },
+                { new: true }
+            );
+    
+            kh = await AccKH.findByIdAndUpdate(
+                { _id: customer },
+                { soDu: soDuUpdate },
+                { new: true }
+            );
+    
+            const purchaseRecord = new LichSuMuaTuiMu({
+                customer,
+                bagType: bagTypeRecord._id,
+                quantity,
+                totalPrice,
+                results,
+                IdCTV: bagTypeRecord.IdCTV
+            });
+            await purchaseRecord.save();
+    
+            return res.status(200).json({
+                data: {
+                    bagType: bagTypeRecord.name,
+                    quantity,
+                    price,
+                    totalPrice,
+                    results,
+                    IdCTV: bagTypeRecord.IdCTV,
+                },
+            });
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({ message: error.message });
+        }
+    },
+    
+
+    muaTui1: async (req, res) => {
+        try {
             // Dữ liệu từ client: customer, bagType (ID của loại túi) và quantity
             const { customer, quantity, IdLoaiTui } = req.body;
             

@@ -77,9 +77,9 @@ module.exports = {
 
     createGift: async (req, res) => {
         try {
-            let {name, description, linkURLFaceBook, IdCTV} = req.body                                                 
+            let {name, description, linkURLFaceBook, IdCTV, rate} = req.body                                                 
 
-            let createSP = await Gift.create({name, description, linkURLFaceBook, IdCTV})
+            let createSP = await Gift.create({name, description, linkURLFaceBook, IdCTV, rate})
 
             if(createSP){
                 return res.status(200).json({
@@ -105,9 +105,9 @@ module.exports = {
 
     updateGift: async (req, res) => {
         try {
-            let {_id, name, description, linkURLFaceBook, IdCTV} = req.body          
+            let {_id, name, description, linkURLFaceBook, IdCTV, rate} = req.body          
 
-            let updateTL = await Gift.updateOne({_id: _id},{name, description, linkURLFaceBook, IdCTV})
+            let updateTL = await Gift.updateOne({_id: _id},{name, description, linkURLFaceBook, IdCTV, rate})
 
             if(updateTL) {
                 return res.status(200).json({

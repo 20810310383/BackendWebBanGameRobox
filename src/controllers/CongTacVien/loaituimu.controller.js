@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const BagType = require("../../models/BagType");
 
 module.exports = {
@@ -42,6 +43,10 @@ module.exports = {
             
             let sp = await BagType.find(query)
                 .populate("IdCTV")
+                .populate({
+                    path: "prizePool.gift",
+                    model: "Gift",
+                })
                 .skip(skip)
                 .limit(limitNumber)
                 .sort({ [sort]: sortOrder })           
@@ -76,9 +81,11 @@ module.exports = {
 
     createBagType: async (req, res) => {
         try {
-            let {name, price, description, winningRate, stock, IdCTV} = req.body                                                 
+            let {name, price, description, winningRate, stock, IdCTV, prizePool} = req.body                                                 
 
-            let createSP = await BagType.create({name, price, description, winningRate, stock, IdCTV})
+            let formattedPrizePool = prizePool.map(id => ({ gift: new mongoose.Types.ObjectId(id) }));
+
+            let createSP = await BagType.create({name, price, description, winningRate, stock, IdCTV, prizePool: formattedPrizePool})
 
             if(createSP){
                 return res.status(200).json({
@@ -104,9 +111,12 @@ module.exports = {
 
     updateBagType: async (req, res) => {
         try {
-            let {_id, name, price, description, winningRate, stock, IdCTV} = req.body          
+            let {_id, name, price, description, winningRate, stock, IdCTV, prizePool} = req.body          
 
-            let updateTL = await BagType.updateOne({_id: _id},{name, price, description, winningRate, stock, IdCTV})
+            // Chuyển đổi prizePool thành mảng object { gift: ObjectId }
+            let formattedPrizePool = prizePool.map(id => ({ gift: new mongoose.Types.ObjectId(id) }));
+
+            let updateTL = await BagType.updateOne({_id: _id},{name, price, description, winningRate, stock, IdCTV, prizePool: formattedPrizePool})
 
             if(updateTL) {
                 return res.status(200).json({
