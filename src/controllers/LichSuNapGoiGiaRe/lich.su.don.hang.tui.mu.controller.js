@@ -48,7 +48,7 @@ module.exports = {
             // Tạo query tìm kiếm
             const query = {};
             if (IdKH) {
-                query.IdKH = new mongoose.Types.ObjectId(IdKH);
+                query.customer = new mongoose.Types.ObjectId(IdKH);
             }
             // if (name) {
             //     const searchKeywords = name.trim().split(/\s+/).map(keyword => {
