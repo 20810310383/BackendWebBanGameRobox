@@ -36,7 +36,7 @@ module.exports = {
 
     getAllDonHangMuaTuiMu: async (req, res) => {
         try {
-            let {page, limit, name, sort, order, IdKH, locTheoLoai} = req.query
+            let {page, limit, name, sort, order, IdKH, locTheoLoai, IdCTV} = req.query
 
             // Chuyển đổi thành số
             const pageNumber = parseInt(page, 10);
@@ -50,6 +50,9 @@ module.exports = {
             if (IdKH) {
                 query.customer = new mongoose.Types.ObjectId(IdKH);
             }
+            if (IdCTV) {
+                query.IdCTV = new mongoose.Types.ObjectId(IdCTV);
+            }
             // if (name) {
             //     const searchKeywords = name.trim().split(/\s+/).map(keyword => {
             //         // Chuyển keyword thành regex để tìm kiếm gần đúng (không phân biệt chữ hoa chữ thường)
@@ -62,12 +65,12 @@ module.exports = {
             //     query.$or = searchKeywords;
             // }  
             
-            // if (locTheoLoai) {
-            //     // Chuyển 'locTheoLoai' từ string sang mảng ObjectId
-            //     const locTheoLoaiArray = Array.isArray(locTheoLoai) ? locTheoLoai : JSON.parse(locTheoLoai);
+            if (locTheoLoai) {
+                // Chuyển 'locTheoLoai' từ string sang mảng ObjectId
+                const locTheoLoaiArray = Array.isArray(locTheoLoai) ? locTheoLoai : JSON.parse(locTheoLoai);
 
-            //     query.isActive = { $in: locTheoLoaiArray }; // Dùng toán tử $in để lọc theo mảng các ObjectId
-            // } 
+                query.isActive = { $in: locTheoLoaiArray }; // Dùng toán tử $in để lọc theo mảng các ObjectId
+            } 
 
             let sortOrder = -1; 
             if (order === "desc") {
