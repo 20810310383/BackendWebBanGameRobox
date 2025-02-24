@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const TheDienThoai_Schema = new mongoose.Schema(
     {
-        Seri: { type: Number, required: false },
+        Seri: { type: String, required: false },
         MaThe: { type: Number, required: false },
         NhaMang: { type: String, required: false, default: "" },
         MenhGia: { type: String, required: false, default: "" },
