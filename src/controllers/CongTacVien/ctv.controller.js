@@ -194,12 +194,12 @@ module.exports = {
             let check = await CongTacVien.findOne({ email: email });
     
             if (check) {
-                if (check.name !== name) {
-                    return res.status(400).json({
-                        success: false,
-                        message: `Email ${email} đã được đăng ký với tài khoản khác. Bạn không thể đăng ký lại với tài khoản này!`
-                    });
-                }
+                // if (check.name !== name) {
+                //     return res.status(400).json({
+                //         success: false,
+                //         message: `Email ${email} đã được đăng ký với tài khoản khác. Bạn không thể đăng ký lại với tài khoản này!`
+                //     });
+                // }
                 if (check.isActive) {
                     return res.status(400).json({
                         success: false,
