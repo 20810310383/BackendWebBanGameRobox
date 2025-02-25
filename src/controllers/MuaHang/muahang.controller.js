@@ -196,10 +196,12 @@ module.exports = {
                     query.IdSP = { $in: idsSanPhamAdmin }; // Tìm các đơn hàng có IdSP thuộc danh sách này
                 } else {
                     // Nếu idCTV là CTV bình thường, chỉ lấy đơn hàng có sản phẩm của CTV đó
-                    let timSPTheoCTV = await SanPham.findOne({ IdCTV: idCTV });
-                    if (timSPTheoCTV) {
-                        query.IdSP = new mongoose.Types.ObjectId(timSPTheoCTV._id);
-                    }
+                    let timSPTheoCTV = await SanPham.find({ IdCTV:  new mongoose.Types.ObjectId(idCTV) });
+                    let idsSanPhamAdmin = timSPTheoCTV.map(sp => sp._id); // Lấy danh sách _id của sản phẩm admin đăng
+                    query.IdSP = { $in: idsSanPhamAdmin }; // Tìm các đơn hàng có IdSP thuộc danh sách này
+                    // if (timSPTheoCTV) {
+                    //     query.IdSP = new mongoose.Types.ObjectId(timSPTheoCTV._id);
+                    // }
                 }
             }
             
