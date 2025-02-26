@@ -84,7 +84,7 @@ module.exports = {
     },  
     
     doiThongTinctv: async (req, res) => {
-        const {_idAcc, password, passwordMoi, image, stk} = req.body 
+        const {_idAcc, password, passwordMoi, image, stk, name} = req.body 
 
         console.log("image: ", image);
         
@@ -94,7 +94,7 @@ module.exports = {
 
         const updateResult = await CongTacVien.updateOne(
             { _id: _idAcc }, 
-            { password: hashedPassword, image, stk }
+            { password: hashedPassword, image, stk, name }
         );
         
         if(updateResult) {
