@@ -245,7 +245,7 @@ module.exports = {
                 console.log("idUser: ", idUser);                
                 const updatedUser = await AccKH.findOneAndUpdate(
                     // { _id: idUser },
-                    { name: idUser },
+                    { name: new RegExp(`^${idUser}$`, "i") }, // Tìm kiếm không phân biệt hoa thường
                     {
                         $inc: { soDu: sePayWebhookData.transferAmount },
                         $push: {

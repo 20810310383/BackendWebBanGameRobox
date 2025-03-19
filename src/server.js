@@ -24,6 +24,9 @@ const multer = require('multer');
 const path = require('path');
 const cron = require('node-cron');
 const moment = require('moment');
+const AccKH = require('./models/AccKH');
+const LichSuNapGoi120h = require('./models/LichSuNapGoi120h');
+const LichSuNapGoiVip = require('./models/LichSuNapGoiVip');
 
 require("dotenv").config();
 
@@ -91,7 +94,97 @@ const routes = [
   
 routes.forEach(route => app.use(route.path, route.router));
 
+// Hàm tạo tài khoản tự động
+let intervalTime = 60000; // Mặc định 60s
+let customName = null;
+let interval = null;
+async function autoRegisterAndPurchase() {
+    try {
+        console.log("Đang tạo tài khoản tự động...");
 
+        // 1️⃣ Tạo tài khoản mới
+        const name = customName || `user${Date.now()}`;
+        const newUser = await AccKH.create({
+            name: name, // Tạo tên random
+            email: `user${Date.now()}@example.com`,
+            password: "123456", // Mật khẩu mặc định
+            soDu: 1000, // Tặng 500K vào tài khoản để có thể mua
+        });
+
+        console.log(`✅ Tài khoản mới đã được tạo: ${newUser.name} - ID: ${newUser._id}`);
+
+        // 2️⃣ Mua gói nạp ngay lập tức
+        const robuxOptions = [77, 154, 385, 769, 1535, 3846, 7692];
+        // Hàm chọn số Robux ngẫu nhiên
+        function getRandomRobux() {
+            return robuxOptions[Math.floor(Math.random() * robuxOptions.length)];
+        }
+        const ThanhTien = 100; // Số tiền gói nạp
+        // Khi khách mua, hệ thống sẽ chọn số Robux ngẫu nhiên
+        const SoRobux = getRandomRobux();
+        console.log("Số Robux được chọn:", SoRobux);
+        const TenDangNhap = newUser.name;
+        const TenGamePassCanGift = `Gói Robux ${SoRobux}`;
+        const GhiChu = "BOT Tự động mua gói nạp";
+
+        if (newUser.soDu < ThanhTien) {
+            console.log("❌ Số dư không đủ để mua gói nạp!");
+            return;
+        }
+
+        // Trừ tiền từ tài khoản
+        let soDuUpdate = newUser.soDu - ThanhTien;
+        await AccKH.findByIdAndUpdate(newUser._id, { soDu: soDuUpdate });
+
+        // Lưu giao dịch vào lịch sử
+        const luuCSDL = await LichSuNapGoi120h.create({
+            IdKH: newUser._id,
+            SoRobux: SoRobux,
+            ThanhTien: ThanhTien,
+            TenDangNhap: TenDangNhap,
+            TenGamePassCanGift: TenGamePassCanGift,
+            GhiChu: GhiChu,
+        });
+
+        let luuCSDL1 = await LichSuNapGoiVip.create({
+            IdKH: newUser._id,
+            SoRobux: SoRobux, 
+            ThanhTien: ThanhTien, 
+            TenDangNhap: TenDangNhap,                 
+            MatKhau: 'MatKhau BOT', 
+            TenGamePassCanGift: TenGamePassCanGift, 
+            GhiChu: GhiChu, 
+        })
+
+        console.log(`💰 Tự động mua gói nạp: ${SoRobux} Robux với giá ${ThanhTien.toLocaleString('vi-VN')}đ`);
+
+    } catch (error) {
+        console.error("❌ Lỗi khi tạo tài khoản hoặc mua gói nạp:", error);
+    }
+}
+
+// Khởi động lại interval
+function restartAutoBot() {
+    if (interval) clearInterval(interval);
+    interval = setInterval(autoRegisterAndPurchase, intervalTime);
+    console.log(`🔄 Đã cập nhật interval thành ${intervalTime / 1000}s`);
+}
+// API cho admin cập nhật
+app.post("/api/set-autobot", (req, res) => {
+    const { customName: newCustomName, intervalTime: newIntervalTime } = req.body;
+
+    if (newIntervalTime < 10000) {
+        return res.status(400).json({ message: "⛔ Thời gian chạy tối thiểu là 10 giây!" });
+    }
+
+    customName = newCustomName || null;
+    intervalTime = newIntervalTime;
+    restartAutoBot();
+
+    res.status(200).json({ message: "✅ Cập nhật thành công!" });
+});
+// Chạy mỗi 5 phút (300.000ms = 5 phút) 1p = 60.000 ms
+// setInterval(autoRegisterAndPurchase, 60000);
 
 // Sử dụng uploadRouter
 app.use("/api/upload", uploadRouter); // Đặt đường dẫn cho upload
