@@ -98,12 +98,18 @@ routes.forEach(route => app.use(route.path, route.router));
 let intervalTime = 60000; // Mặc định 60s
 let customName = null;
 let interval = null;
+function getRandomName() {
+    if (!customName) return `user${Date.now()}`; 
+    let nameArray = customName.split(",").map(name => name.trim()); // Tách chuỗi thành mảng
+    return nameArray[Math.floor(Math.random() * nameArray.length)]; // Chọn ngẫu nhiên 1 tên bot
+}
+
 async function autoRegisterAndPurchase() {
     try {
         console.log("Đang tạo tài khoản tự động...");
 
         // 1️⃣ Tạo tài khoản mới
-        const name = customName || `user${Date.now()}`;
+        const name = getRandomName();
         const newUser = await AccKH.create({
             name: name, // Tạo tên random
             email: `user${Date.now()}@example.com`,
