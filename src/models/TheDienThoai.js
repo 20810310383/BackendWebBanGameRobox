@@ -1,20 +1,16 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 
-const TheDienThoai_Schema = new mongoose.Schema(
-    {
-        Seri: { type: String, required: false },
-        MaThe: { type: Number, required: false },
-        NhaMang: { type: String, required: false, default: "" },
-        MenhGia: { type: String, required: false, default: "" },
-        Note: { type: String, required: false, default: "" },
-        IdKH: {ref: "AccKH", type: mongoose.SchemaTypes.ObjectId},
-        isActive: { type: Boolean, default: false},     
-    },
-    { 
-        timestamps: true,   // createAt, updateAt
-    },
-);
+const TheDienThoaiSchema = new mongoose.Schema({
+    Seri: String,
+    MaThe: String,
+    IdKH: { type: mongoose.Schema.Types.ObjectId, ref: "AccKH" },
+    NhaMang: String,
+    MenhGia: Number,
+    request_id: String,
+    trangThai: { type: String, default: "cho-duyet" }, // cho-duyet | thanh-cong | that-bai
+    giaTriKhaiBao: Number,
+    giaTriThucNhan: Number,
+    Note: String,
+}, { timestamps: true });
 
-const TheDienThoai = mongoose.model('TheDienThoai', TheDienThoai_Schema);
-
-module.exports = TheDienThoai;
+module.exports = mongoose.model("TheDienThoai", TheDienThoaiSchema);

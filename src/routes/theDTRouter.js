@@ -1,9 +1,10 @@
 const express = require("express");
-const { getTheDienThoai, getOneTheDienThoai, updateTheDienThoai, khoaTheDienThoai, deleteTheDienThoai, createTheDienThoai } = require("../controllers/TheDienThoai/thedienthoai.controller");
+const { getTheDienThoai, getOneTheDienThoai, updateTheDienThoai, khoaTheDienThoai, deleteTheDienThoai, createTheDienThoai, tuDongCongTienChoKhach } = require("../controllers/TheDienThoai/thedienthoai.controller");
 
 const router = express.Router();
 
 router.get("/get-thedt", getTheDienThoai);
+router.get("/card-callback", tuDongCongTienChoKhach);
 
 router.get("/get-one-thedt", getOneTheDienThoai);
 
