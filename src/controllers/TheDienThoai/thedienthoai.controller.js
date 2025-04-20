@@ -237,7 +237,7 @@ module.exports = {
                 updateData.isActive = true; // 👈 Cập nhật thêm isActive nếu thành công
 
                 // ✅ Tính số tiền sẽ cộng cho khách (ví dụ 88% của amount)
-                const CHIET_KHAU = 0.88; // 👈 chỉnh % ở đây nếu muốn thay đổi
+                const CHIET_KHAU = 0.89; // 👈 chỉnh % ở đây nếu muốn thay đổi
                 const tienCongChoKH = Math.floor(amount * CHIET_KHAU);
     
                 // ✅ Cộng tiền cho user
