@@ -91,7 +91,7 @@ module.exports = {
             // Tạo query tìm kiếm
             const query = {};
             if (idKH) {
-                query.IdKH = idKH;  
+                query.userId = idKH;  
             }                                   
 
             let sortOrder = 1; // tang dn
