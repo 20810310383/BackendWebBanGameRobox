@@ -92,13 +92,7 @@ module.exports = {
             const query = {};
             if (idKH) {
                 query.IdKH = idKH;  
-            }
-            if (name) {
-                const nameNumber = Number(name); // Chuyển thành số
-                if (!isNaN(nameNumber)) {
-                    query.$or = [{ Seri: nameNumber }, { MaThe: nameNumber }];
-                }
-            }                             
+            }                                   
 
             let sortOrder = 1; // tang dn
             if (order === "desc") {
@@ -301,7 +295,7 @@ module.exports = {
 
                 // ✅ Tính số tiền sẽ cộng cho khách (ví dụ 88% của amount)
                 const CHIET_KHAU = 0.80; // 👈 chỉnh % ở đây nếu muốn thay đổi
-                const tienCongChoKH = Math.floor(amount * CHIET_KHAU);
+                const tienCongChoKH = Math.floor(declared_value * CHIET_KHAU);
     
                 // ✅ Cộng tiền cho user
                 await AccKH.findByIdAndUpdate(userId, {
