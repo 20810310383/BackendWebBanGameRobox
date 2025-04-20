@@ -188,7 +188,8 @@ module.exports = {
     },
     tuDongCongTienChoKhach: async (req, res) => {
         const { request_id, status, declared_value, amount, message, code, serial } = req.query;
-    
+        console.log("🔍 Tìm thẻ với MaThe:", code, "và Seri:", serial);
+
         console.log("🔥 Callback received with query:", req.query);
         console.log("request_id:", request_id);
         console.log("status:", status);
@@ -227,12 +228,28 @@ module.exports = {
                 console.log("❌ Gạch thẻ lỗi:", message);
             }
     
-            // ✅ Cập nhật bản ghi thẻ
-            await TheDienThoai.findOneAndUpdate(
-                { MaThe: code, Seri: serial },
-                updateData,
-                { new: true }
-            );
+            // // ✅ Cập nhật bản ghi thẻ
+            // await TheDienThoai.findOneAndUpdate(
+            //     { MaThe: code, Seri: serial },
+            //     updateData,
+            //     { new: true }
+            // );
+            const the = await TheDienThoai.findOne({ MaThe: code, Seri: serial });
+
+            if (!the) {
+                console.warn("❌ Không tìm thấy thẻ để cập nhật:", code, serial);
+            } else {
+                console.log("✅ Tìm thấy thẻ:", the);
+
+                const updated = await TheDienThoai.findByIdAndUpdate(
+                    the._id,
+                    updateData,
+                    { new: true }
+                );
+
+                console.log("📝 Đã cập nhật thẻ:", updated);
+            }
+
     
             res.send("OK");
         } catch (error) {
