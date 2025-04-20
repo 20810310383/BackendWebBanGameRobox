@@ -206,6 +206,7 @@ module.exports = {
                 giaTriKhaiBao: declared_value,
                 giaTriThucNhan: amount,
                 Note: message,
+                isActive: false, // 👈 Mặc định là false
             };
     
             if (status == "1") {
