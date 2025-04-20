@@ -2,6 +2,7 @@ const { default: axios } = require("axios");
 const TheDienThoai = require("../../models/TheDienThoai");
 const AccKH = require("../../models/AccKH");
 const crypto = require("crypto");
+const LichSuNapThe = require("../../models/LichSuNapThe");
 
 const partner_id = "26605232751";
 const partner_key = "05e982c2a98a1b2cd86df2e0ae8fdf4c";
@@ -64,6 +65,68 @@ module.exports = {
             } else {
                 return res.status(500).json({
                     message: "Tìm TheDienThoai thất bại!",
+                    errCode: -1,
+                });
+            }
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({
+                message: "Có lỗi xảy ra.",
+                error: error.message,
+            });
+        }
+    },
+
+    getLichSuNap: async (req, res) => {
+        try {
+            let { page, limit, name, sort, order, idKH,  } = req.query;
+
+            // Chuyển đổi thành số
+            const pageNumber = parseInt(page, 10);
+            const limitNumber = parseInt(limit, 10);
+
+            // Tính toán số bản ghi bỏ qua
+            const skip = (pageNumber - 1) * limitNumber;
+
+            // Tạo query tìm kiếm
+            const query = {};
+            if (idKH) {
+                query.IdKH = idKH;  
+            }
+            if (name) {
+                const nameNumber = Number(name); // Chuyển thành số
+                if (!isNaN(nameNumber)) {
+                    query.$or = [{ Seri: nameNumber }, { MaThe: nameNumber }];
+                }
+            }                             
+
+            let sortOrder = 1; // tang dn
+            if (order === "desc") {
+                sortOrder = -1;
+            }
+            console.log("sortOrder: ", sortOrder);
+
+            let theDienThoai = await LichSuNapThe.find(query).populate("userId")
+                .skip(skip)
+                .limit(limitNumber)
+                .sort({ [sort]: sortOrder });
+
+            const totalLichSuNapThe = await LichSuNapThe.countDocuments(query); // Đếm tổng số chức vụ
+
+            const totalPages = Math.ceil(totalLichSuNapThe / limitNumber); // Tính số trang
+
+            if (theDienThoai) {
+                return res.status(200).json({
+                    message: "Đã tìm ra LichSuNapThe",
+                    errCode: 0,
+                    data: theDienThoai, // Trả về các TheDienThoai có kèm tổng số sản phẩm
+                    totalLichSuNapThe,
+                    totalPages,
+                    currentPage: pageNumber,
+                });
+            } else {
+                return res.status(500).json({
+                    message: "Tìm LichSuNapThe thất bại!",
                     errCode: -1,
                 });
             }
@@ -247,6 +310,19 @@ module.exports = {
                         soTienNap: +tienCongChoKH,
                     },
                 });
+
+                 // ✅ Ghi lại lịch sử nạp
+                await LichSuNapThe.create({
+                    userId,
+                    maThe: code,
+                    seri: serial,
+                    telco: req.query.telco || "", // 👈 optional, phòng trường hợp thiếu
+                    request_id,
+                    giaTriKhaiBao: Number(declared_value),
+                    giaTriGachDuoc: Number(amount),
+                    soTienCongChoKH: tienCongChoKH,
+                    message,
+                });
             } else {
                 trangThai = "that-bai";
                 updateData.trangThai = trangThai;
@@ -295,7 +371,7 @@ module.exports = {
             console.error("❌ Lỗi callback:", error);
             res.status(500).send("Lỗi xử lý");
         }
-    },
+    },    
     
           
     updateTheDienThoai: async (req, res) => {
