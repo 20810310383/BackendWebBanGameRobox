@@ -139,6 +139,14 @@ module.exports = {
 
     tuDongCongTienChoKhach: async (req, res) => {
         const { request_id, status, declared_value, amount, message } = req.query;
+
+        console.log("🧾 Callback Info:");
+        console.log("request_id:", request_id);
+        console.log("status:", status);
+        console.log("amount:", amount);
+        console.log("message:", message);
+        console.log("declared_value:", declared_value);
+
       
         try {
             const [userId, timestamp] = request_id.split("_");
@@ -168,7 +176,8 @@ module.exports = {
                 giaTriKhaiBao: declared_value,
                 giaTriThucNhan: amount,
                 Note: message,
-                }
+                },
+                { new: true } // Trả về bản ghi sau khi update
             );
         
             res.send("OK");
