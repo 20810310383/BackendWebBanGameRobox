@@ -140,7 +140,7 @@ module.exports = {
     tuDongCongTienChoKhach: async (req, res) => {
         const { request_id, status, declared_value, amount, message } = req.query;
 
-        console.log("🧾 Callback Info:");
+        console.log("🔥 Callback received with query:", req.query); // 👈 THÊM DÒNG NÀY
         console.log("request_id:", request_id);
         console.log("status:", status);
         console.log("amount:", amount);
