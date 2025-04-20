@@ -187,7 +187,7 @@ module.exports = {
         }
     },
     tuDongCongTienChoKhach: async (req, res) => {
-        const { request_id, status, declared_value, amount, message } = req.query;
+        const { request_id, status, declared_value, amount, message, code, serial } = req.query;
     
         console.log("🔥 Callback received with query:", req.query);
         console.log("request_id:", request_id);
@@ -229,7 +229,7 @@ module.exports = {
     
             // ✅ Cập nhật bản ghi thẻ
             await TheDienThoai.findOneAndUpdate(
-                { request_id },
+                { MaThe: code, Seri: serial },
                 updateData,
                 { new: true }
             );
