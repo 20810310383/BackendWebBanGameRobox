@@ -76,6 +76,27 @@ module.exports = {
         }
     },
 
+    createTheDienThoai1: async (req, res) => {
+        try {
+            let { Seri, MaThe, IdKH, NhaMang, MenhGia } = req.body;            
+
+            let updateTL = await TheDienThoai.create({ Seri, MaThe, IdKH, NhaMang, MenhGia });
+
+            if (updateTL) {
+
+                return res.status(200).json({
+                    data: updateTL,
+                    message: "Gửi duyệt thẻ thành công",
+                });
+            } else {
+                return res.status(404).json({
+                    message: "Gửi duyệt thẻ thất bại",
+                });
+            }
+        } catch (error) {
+        }
+    },
+
     createTheDienThoai: async (req, res) => {
         try {
             let { Seri, MaThe, IdKH, NhaMang, MenhGia } = req.body;  
@@ -234,28 +255,38 @@ module.exports = {
             //     updateData,
             //     { new: true }
             // );
-            const the = await TheDienThoai.findOne({
-                MaThe: String(code).trim(),
-                Seri: String(serial).trim(),
-            });
+            // const the = await TheDienThoai.findOne({
+            //     MaThe: String(code).trim(),
+            //     Seri: String(serial).trim(),
+            // });
               
+            let the = await TheDienThoai.findOne({ MaThe: code.trim(), Seri: serial.trim() });
 
             if (!the) {
-                console.warn("❌ Không tìm thấy thẻ để cập nhật:", code, serial);
-            } else {
-                console.log("✅ Tìm thấy thẻ:", the);
-
-                const updated = await TheDienThoai.findByIdAndUpdate(
-                    the._id,
-                    updateData,
-                    { new: true }
-                );
-
-                console.log("📝 Đã cập nhật thẻ:", updated);
+                console.warn("⚠️ Chưa thấy, đợi 1s rồi thử lại...");
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                the = await TheDienThoai.findOne({ MaThe: code.trim(), Seri: serial.trim() });
             }
 
-    
+            if (!the) {
+                console.warn("❌ Vẫn không thấy thẻ sau 2 lần thử:", code, serial);
+                return res.status(404).send("Không tìm thấy thẻ");
+            }
+
+            // ✅ Nếu tới đây là chắc chắn đã tìm thấy thẻ
+            console.log("✅ Tìm thấy thẻ:", the);
+
+            const updated = await TheDienThoai.findByIdAndUpdate(
+                the._id,
+                updateData,
+                { new: true }
+            );
+
+            console.log("📝 Đã cập nhật thẻ:", updated);
+
             res.send("OK");
+
+
         } catch (error) {
             console.error("❌ Lỗi callback:", error);
             res.status(500).send("Lỗi xử lý");
