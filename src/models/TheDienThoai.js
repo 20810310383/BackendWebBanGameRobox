@@ -11,6 +11,7 @@ const TheDienThoaiSchema = new mongoose.Schema({
     giaTriKhaiBao: Number,
     giaTriThucNhan: Number,
     Note: String,
+    response: mongoose.Schema.Types.Mixed // 👈 Thêm dòng này để lưu toàn bộ response từ API
 }, { timestamps: true });
 
 module.exports = mongoose.model("TheDienThoai", TheDienThoaiSchema);
