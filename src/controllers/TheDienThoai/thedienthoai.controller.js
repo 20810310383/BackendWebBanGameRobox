@@ -4,8 +4,8 @@ const AccKH = require("../../models/AccKH");
 const crypto = require("crypto");
 const LichSuNapThe = require("../../models/LichSuNapThe");
 
-const partner_id = "26605232751";
-const partner_key = "05e982c2a98a1b2cd86df2e0ae8fdf4c";
+const partner_id = "76944225002";
+const partner_key = "a1b1c8ee7639dce9a88eaae1cad2f605";
 
 module.exports = {
     getTheDienThoai: async (req, res) => {
