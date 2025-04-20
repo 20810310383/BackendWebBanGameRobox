@@ -137,7 +137,7 @@ module.exports = {
         }
     },
 
-    tuDongCongTienChoKhach: async (req, res) => {
+    tuDongCongTienChoKhach1: async (req, res) => {
         const { request_id, status, declared_value, amount, message } = req.query;
 
         console.log("🔥 Callback received with query:", req.query); // 👈 THÊM DÒNG NÀY
@@ -186,9 +186,61 @@ module.exports = {
             res.status(500).send("Lỗi xử lý");
         }
     },
-      
-      
-
+    tuDongCongTienChoKhach: async (req, res) => {
+        const { request_id, status, declared_value, amount, message } = req.query;
+    
+        console.log("🔥 Callback received with query:", req.query);
+        console.log("request_id:", request_id);
+        console.log("status:", status);
+        console.log("amount:", amount);
+        console.log("message:", message);
+        console.log("declared_value:", declared_value);
+    
+        try {           
+            const [userId, timestamp] = request_id.split("_");
+            if (!userId) return res.status(400).send("❌ Invalid request_id format");
+    
+            let trangThai = "cho-duyet";
+            let updateData = {
+                trangThai,
+                giaTriKhaiBao: declared_value,
+                giaTriThucNhan: amount,
+                Note: message,
+            };
+    
+            if (status == "1") {
+                trangThai = "thanh-cong";
+                updateData.trangThai = trangThai;
+                updateData.isActive = true; // 👈 Cập nhật thêm isActive nếu thành công
+    
+                // ✅ Cộng tiền cho user
+                await AccKH.findByIdAndUpdate(userId, {
+                    $inc: {
+                        soDu: +amount,
+                        soTienNap: +amount,
+                    },
+                });
+            } else {
+                trangThai = "that-bai";
+                updateData.trangThai = trangThai;
+                console.log("❌ Gạch thẻ lỗi:", message);
+            }
+    
+            // ✅ Cập nhật bản ghi thẻ
+            await TheDienThoai.findOneAndUpdate(
+                { request_id },
+                updateData,
+                { new: true }
+            );
+    
+            res.send("OK");
+        } catch (error) {
+            console.error("❌ Lỗi callback:", error);
+            res.status(500).send("Lỗi xử lý");
+        }
+    },
+    
+          
     updateTheDienThoai: async (req, res) => {
         try {
             let { _id, Seri, MaThe, IdKH, Note, NhaMang, MenhGia } = req.body;            
