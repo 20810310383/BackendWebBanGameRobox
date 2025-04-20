@@ -234,7 +234,11 @@ module.exports = {
             //     updateData,
             //     { new: true }
             // );
-            const the = await TheDienThoai.findOne({ MaThe: code, Seri: serial });
+            const the = await TheDienThoai.findOne({
+                MaThe: String(code).trim(),
+                Seri: String(serial).trim(),
+            });
+              
 
             if (!the) {
                 console.warn("❌ Không tìm thấy thẻ để cập nhật:", code, serial);
