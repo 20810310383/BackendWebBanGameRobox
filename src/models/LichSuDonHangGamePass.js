@@ -33,7 +33,8 @@ const LichSuDonHangSchema = new Schema({
     createdAt: {
         type: Date,
         default: Date.now
-    }
+    },
+    isActive: { type: Boolean, default: false},
 });
 
 module.exports = mongoose.model('LichSuDonHangGamePass', LichSuDonHangSchema);

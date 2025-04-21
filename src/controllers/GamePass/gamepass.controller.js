@@ -307,5 +307,35 @@ module.exports = {
             res.status(500).json({ message: 'Lỗi server khi lấy đơn hàng!' });
         }
     },
+
+    editTrangThaiDonHangDVGamepass: async (req, res) => {
+        try {
+            // const id = req.params.id
+            const { id, isActive } = req.body;
+
+            const updatedAccount = await LichSuDonHangGamePass.findByIdAndUpdate(
+                id,
+                { isActive },
+                { new: true }
+            );
+
+            if (updatedAccount) {
+                return res.status(200).json({
+                    message: "Cập nhật thành công",
+                    data: updatedAccount,
+                });
+            } else {
+                return res
+                    .status(404)
+                    .json({ message: "Không tìm thấy" });
+            }
+        } catch (error) {
+            console.error(error);
+            return res.status(500).json({
+                message: "Có lỗi xảy ra.",
+                error: error.message,
+            });
+        }
+    },
     
 }
