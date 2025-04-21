@@ -1,5 +1,5 @@
 const express = require("express");
-const { xoaGamepass, suaGamepass, taoGamepass, getGamepass } = require("../controllers/GamePass/gamepass.controller");
+const { xoaGamepass, suaGamepass, taoGamepass, getGamepass, getDetailGamepass, muahangGamePass, getLichSuDonHangDetail, getLichSuDonHangByUser } = require("../controllers/GamePass/gamepass.controller");
 
 const router = express.Router();
 
@@ -8,6 +8,7 @@ router.get("/get-gamepass", getGamepass );
 
 // tao moi product
 router.post("/create-gamepass", taoGamepass );
+router.post("/muahang-gamepass", muahangGamePass );
 
 // update product
 router.put("/update-gamepass", suaGamepass );
@@ -15,6 +16,9 @@ router.put("/update-gamepass", suaGamepass );
 // delete product
 router.delete("/delete-gamepass/:id", xoaGamepass );
 
+router.get("/get-detail-gamepass", getDetailGamepass );
 
+router.get("/get-all-lichsumua-gamepass", getLichSuDonHangDetail );
+router.get("/get-all-lichsumua-gamepass-byUser", getLichSuDonHangByUser );
 
 module.exports = router;
