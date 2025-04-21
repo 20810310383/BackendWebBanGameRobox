@@ -289,6 +289,7 @@ module.exports = {
                     ghiChu: don.ghiChu,
                     tongTien: don.tongTien,
                     createdAt: don.createdAt,
+                    isActive: don.isActive,
                     gamepass: {
                         _id: don.gamepass?._id,
                         tenGame: don.gamepass?.tenGame,
