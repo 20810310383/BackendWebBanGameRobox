@@ -18,6 +18,7 @@ const loginCTVRouter = require('./routes/loginCTVRouter');
 const rutTienCTVRouter = require('./routes/rutTienCTVRouter');
 const giftRouter = require('./routes/giftRouter');
 const loaiTuiMuRouter = require('./routes/loaiTuiMuRouter');
+const gamepassRouter = require('./routes/gamePassRouter');
 const connectDB = require('./config/connectDB');
 const cors = require('cors');
 const multer = require('multer');
@@ -90,6 +91,7 @@ const routes = [
     { path: '/api/ruttien', router: rutTienCTVRouter },
     { path: '/api/gift', router: giftRouter },
     { path: '/api/loaituimu', router: loaiTuiMuRouter },
+    { path: '/api/gamepass', router: gamepassRouter },
 ];
   
 routes.forEach(route => app.use(route.path, route.router));
